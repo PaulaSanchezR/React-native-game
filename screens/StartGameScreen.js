@@ -1,0 +1,73 @@
+import React from 'react';
+import {View, Text, StyleSheet,Button} from 'react-native';
+import Card from '../components/Card';
+import Colors from '../constants/colors';
+import Input from '../components/Input';
+
+
+const StartGameScreeen = props => {
+    return(
+        <View style={styles.scree}>
+            <Text style={styles.title}>Star a New Game</Text>
+            <Card style={styles.inputContainer}>
+               <Text>Select a number</Text>
+                <Input 
+                    style={styles.input} 
+                    blurOnSubmit 
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    keyboardType="number-pad" 
+                    maxLength={2}
+
+                />
+                <View style={styles.buttonContainer}>
+                    <View style={styles.button}>
+                        <Button title="Reset"  onPress={() => {}} color={Colors.accent}/>
+                    </View>
+                    <View style={styles.button}>
+                        <Button title="Confirm" onPress={() => {}} color={Colors.primary4432}/>
+                    </View>
+                </View>
+           
+            </Card>
+        </View>
+    );
+}
+
+const styles=StyleSheet.create({
+    scree:{
+        flex: 1,
+        padding:10,
+        alignItems: 'center'
+    },
+    title:{
+        fontSize: 20,
+        marginVertical:10
+    },
+
+    inputContainer:{
+        width: 300,
+        maxWidth: '80%',
+        height: 150,
+        // maxHeight: '100%',
+        alignItems:'center',        
+    },
+    buttonContainer:{
+        flexDirection: 'row',
+        width: '100%',
+        // height: 40,
+        justifyContent: 'space-between',
+        paddingHorizontal: 15
+    },
+    button:{
+        width:'50%',
+        margin:'2%'
+    },
+    input:{
+        width: 50,
+        textAlign:'center',
+    }
+
+})
+
+export default StartGameScreeen;
