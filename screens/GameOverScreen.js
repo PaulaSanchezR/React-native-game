@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button, Image } from 'react-native';
+import { View, Text, StyleSheet, Button, Image, Dimensions, ScrollView  } from 'react-native';
 
 import BodyText from '../components/BodyText';
 import TitleText from '../components/TitleText';
@@ -8,6 +8,7 @@ import MainBotton from '../components/MainButton';
 
 const GameOverScreens = props =>{
     return (
+    <ScrollView>
         <View style={styles.screen}>
             <TitleText>The Game is Over</TitleText>
            <View style={styles.imageContainer}>
@@ -24,6 +25,7 @@ const GameOverScreens = props =>{
             {/* <BodyText>Number was: </BodyText> */}
             <MainBotton onPress={props.onRestart}>NEW GAME</MainBotton>
         </View>
+    </ScrollView>  
     )
 
 }
@@ -35,13 +37,13 @@ const styles= StyleSheet.create({
         alignItems:'center'
     },
     imageContainer:{
-        borderRadius:200,
+        borderRadius:Dimensions.get('window').width *0.7 / 2,//200,
         borderWidth:3,
         borderColor:'black',
-        width:300,  // has to be a square to get a perfect circle
-        height:300,
+        width: Dimensions.get('window').width *0.7,  // 70% of the available width
+        height:Dimensions.get('window').width *0.7,
         overflow:'hidden', // any child of the container
-        marginVertical:30 // to have more space at the top and botton Vertical asses
+        marginVertical: Dimensions.get('window').height / 30// to have more space at the top and botton Vertical asses
     },
     image:{
         width:'100%',
@@ -57,11 +59,11 @@ const styles= StyleSheet.create({
    resultContainer:{
     //    width:'80%',
        marginHorizontal:30,
-       marginVertical:20
+       marginVertical:Dimensions.get('window').height / 60
    },
    resultText:{
        textAlign:'center',
-       fontSize: 20,
+       fontSize: Dimensions.get('window').height < 600 ? 16 : 20,
     //    marginBottom:20
    }
 })

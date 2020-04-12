@@ -6,7 +6,8 @@ import {
   Button,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert
+  Alert,
+  Dimensions // to see the available space, it is an object no compnent
 } from 'react-native';
 
 import TitleText from '../components/TitleText'
@@ -114,8 +115,10 @@ const styles = StyleSheet.create({
     fontFamily:'open-sans-bold',
   },
   inputContainer: {
-    width: 300,
-    maxWidth: '80%',
+    width: '80%',
+    // maxWidth: '80%',
+    maxWidth:'95%',
+    minWidth: 300,
     alignItems: 'center'
   },
   buttonContainer: {
@@ -125,7 +128,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15
   },
   button: {
-    width: 100
+    // width: 100
+    width: Dimensions.get('window').width / 4 // use for android
   },
   input: {
     width: 50,

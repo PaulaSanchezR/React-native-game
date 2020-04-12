@@ -1,5 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, Alert, ScrollView } from 'react-native';
+import { 
+    View, 
+    Text, 
+    StyleSheet, 
+    Button, 
+    Alert, 
+    ScrollView , 
+    Dimensions,  // it is a API 
+    FlatList} from 'react-native';
 import { Ionicons} from '@expo/vector-icons';  //part of expo 
 
 import NumberContainer from '../components/NumberContainer';
@@ -21,6 +29,7 @@ const generateRandomBetween = (min, max, exclude) => {
   }
 };
 
+//  Code for the scrollView
 const renderListItem =(value,numOfRound,userNumber) =>(
     <View key={value} style={styles.listItem}>
      <BodyText>Round # {numOfRound}</BodyText>
@@ -28,11 +37,21 @@ const renderListItem =(value,numOfRound,userNumber) =>(
      <BodyText>Machine: {value}</BodyText>
     </View>
 )
+// Code for a FlatList
+// const renderListItem =(listLength,itemData) =>(
+    
+//     <View style={styles.listItem}>
+//      <BodyText>Round # {listLength - itemData.index}</BodyText>
+//      <BodyText>User: {userNumber}</BodyText>
+//      <BodyText>Machine: {itemData.item}</BodyText>
+//     </View>
+// )
 
 const GameScreen = props => {
 const initialGuess = generateRandomBetween(1, 100, props.userChoice);
 const [currentGuess, setCurrentGuess] = useState(initialGuess);
-const [pastGuesses,setPastGuesses]= useState([initialGuess])  
+// const [pastGuesses,setPastGuesses]= useState([initialGuess])  
+const [pastGuesses,setPastGuesses]= useState([initialGuess.toString()])  
 const currentLow = useRef(1);
 const currentHigh = useRef(100);
 // console.log (pastGuesses)
@@ -66,7 +85,8 @@ useEffect(()=>{
             currentGuess
             );
         setCurrentGuess(nextNumber);
-        setPastGuesses(curPastGuesses =>[nextNumber, ...curPastGuesses]);
+        // setPastGuesses(curPastGuesses =>[nextNumber, ...curPastGuesses]);
+        setPastGuesses(curPastGuesses =>[nextNumber.toString(), ...curPastGuesses]);
   }
   return (
     <View style={styles.screen}>
@@ -80,11 +100,17 @@ useEffect(()=>{
         <Ionicons name="md-add" size={24} color="white"/>
         </MainButton>
       </Card>
-      <View style={styles.list}>
-           <ScrollView>
-         {pastGuesses.map((guess,index) => renderListItem(guess, pastGuesses.length - index, userChoice))}
-      </ScrollView>
-      </View>
+      <View style={styles.listContainer}>
+           <ScrollView contentContainerStyle={styles.list}>
+             {pastGuesses.map((guess,index) => renderListItem(guess, pastGuesses.length - index, userChoice))}
+           </ScrollView>
+           {/* <FlatList 
+                keyExtractor={item => item }
+                date={pastGuesses} 
+                renderItem={renderListItem.bind(this, pastGuesses.length)}
+                contentContainerStyle={Styles.list}
+           /> */}
+      </View> 
      
     </View>
   );
@@ -99,13 +125,22 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 20,
+    marginTop: Dimensions.get('window').height > 600 ? 30 : 5,
     width: 400,
     maxWidth: '90%',
     // marginHorizontal:20,
   },
   button:{
       marginHorizontal: 5
+  },
+  listContainer:{
+      flex:1,
+      width: Dimensions.get('window').width > 300 ? '100%' : '80%'
+  },
+  list:{
+       flexGrow:1, //to stat from the bottom the last item is visible
+       alignItems:'center' , // to center the scrollview item
+       justifyContent: 'flex-end' // to start from the bottm
   },
   listItem:{
         borderColor:'#ccc',
@@ -114,13 +149,10 @@ const styles = StyleSheet.create({
         marginVertical:10,
         backgroundColor:'white',
         flexDirection:'row',
-        justifyContent:'space-between'
+        justifyContent:'space-between',
+        width:'80%',
   },
-  list:{
-      flex:1,
-      width:'80%'
-  }
-
+  
 });
 
 export default GameScreen;
