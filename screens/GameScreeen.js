@@ -52,10 +52,23 @@ const initialGuess = generateRandomBetween(1, 100, props.userChoice);
 const [currentGuess, setCurrentGuess] = useState(initialGuess);
 // const [pastGuesses,setPastGuesses]= useState([initialGuess])  
 const [pastGuesses,setPastGuesses]= useState([initialGuess.toString()])  
+const [availableDeviceWidth, setAvailableDeviceWidth]=useState([Dimensions.get('window').width])
+const [availableDeviceHeigth, setAvailableDeviceHeigth]=useState([Dimensions.get('window').height])
 const currentLow = useRef(1);
 const currentHigh = useRef(100);
 // console.log (pastGuesses)
 const {userChoice, onGameOver} = props;
+
+useEffect(()=>{
+  const updateLayout =() =>{
+    setAvailableDeviceWidth(Dimensions.get('window'.width));
+    setAvailableDeviceHeigth(Dimensions.get('window').height)
+  }
+  Dimensions.addEventListener('change', updateLayout)
+  return ()=>{
+    Dimensions.removeEventListener('change', updateLayout)
+  }
+})
 
 // every time that this component render the useEffect esxacute after that it render
 useEffect(()=>{
@@ -88,6 +101,40 @@ useEffect(()=>{
         // setPastGuesses(curPastGuesses =>[nextNumber, ...curPastGuesses]);
         setPastGuesses(curPastGuesses =>[nextNumber.toString(), ...curPastGuesses]);
   }
+
+
+// render a diferen layout base on my dimentions 
+
+if(availableDeviceHeigth < 500){
+  return (
+     <View style={styles.screen}>
+      <Text style={DefaultStyles.title}>Opponent's Guess</Text>
+     <View style={styles.controls}>
+        <MainButton style={styles.button} onPress={nextGuessHandler.bind(this,'lower')}>
+        <Ionicons name="md-remove" size={24} color="white"/>
+        </MainButton>
+        <NumberContainer>{currentGuess}</NumberContainer>
+        <MainButton onPress={nextGuessHandler.bind(this,'greater')}>
+        <Ionicons name="md-add" size={24} color="white"/>
+        </MainButton>
+     </View> 
+      <View style={styles.listContainer}>
+           <ScrollView contentContainerStyle={styles.list}>
+             {pastGuesses.map((guess,index) => renderListItem(guess, pastGuesses.length - index, userChoice))}
+           </ScrollView>
+           {/* <FlatList 
+                keyExtractor={item => item }
+                date={pastGuesses} 
+                renderItem={renderListItem.bind(this, pastGuesses.length)}
+                contentContainerStyle={Styles.list}
+           /> */}
+      </View> 
+     
+    </View>
+  )
+}
+
+
   return (
     <View style={styles.screen}>
       <Text style={DefaultStyles.title}>Opponent's Guess</Text>
@@ -152,6 +199,12 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
         width:'80%',
   },
+  controls:{
+    flexDirection:'row',
+    justifyContent: 'space-around',
+    width: '80%',
+    alignItems:'center'
+  }
   
 });
 

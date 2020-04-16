@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,9 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
-  Dimensions // to see the available space, it is an object no compnent
+  Dimensions, // to see the available space, it is an object no compnent
+  ScrollView,
+  KeyboardAvoidingView // when the key board is covering the screen
 } from 'react-native';
 
 import TitleText from '../components/TitleText'
@@ -22,6 +24,11 @@ const StartGameScreen = props => {
   const [enteredValue, setEnteredValue] = useState('');
   const [confirmed, setConfirmed] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState();
+//   we need to manage the botton side with state
+// if the direcction is landscape or portrait the size needs to change
+  const [buttonWidth, setButtonWidth]= useState(Dimensions.get('window').width / 4)
+
+ 
 
   const numberInputHandler = inputText => {
     setEnteredValue(inputText.replace(/[^0-9]/g, ''));
@@ -31,6 +38,17 @@ const StartGameScreen = props => {
     setEnteredValue('');
     setConfirmed(false);
   };
+// function that I want to run on every redender
+  useEffect(()=>{
+    const updateLayout = () =>{
+      setButtonWidth(Dimensions.get('window').width / 4)
+     }
+     Dimensions.addEventListener('change', updateLayout)
+    //  clean up function 
+     return ()=>{
+      Dimensions.removeEventListener('change', updateLayout)
+     }
+    })
 
   const confirmInputHandler = () => {
     const chosenNumber = parseInt(enteredValue);
@@ -61,6 +79,8 @@ const StartGameScreen = props => {
   }
 
   return (
+  <ScrollView>
+   <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={30}>
     <TouchableWithoutFeedback
       onPress={() => {
         Keyboard.dismiss();
@@ -81,14 +101,14 @@ const StartGameScreen = props => {
             value={enteredValue}
           />
           <View style={styles.buttonContainer}>
-            <View style={styles.button}>
+            <View style={{width: buttonWidth}}>
               <Button
                 title="Reset"
                 onPress={resetInputHandler}
                 color={Colors.accent}
               />
             </View>
-            <View style={styles.button}>
+            <View style={{width: buttonWidth}}>
               <Button
                 title="Confirm"
                 onPress={confirmInputHandler}
@@ -100,6 +120,8 @@ const StartGameScreen = props => {
         {confirmedOutput}
       </View>
     </TouchableWithoutFeedback>
+   </KeyboardAvoidingView>   
+  </ScrollView>    
   );
 };
 
@@ -127,10 +149,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 15
   },
-  button: {
-    // width: 100
-    width: Dimensions.get('window').width / 4 // use for android
-  },
+  // button: {
+  //   // width: 100
+  //   width: Dimensions.get('window').width / 4 // use for android, calculate with the app starts and never reajust
+  // },
   input: {
     width: 50,
     textAlign: 'center'
